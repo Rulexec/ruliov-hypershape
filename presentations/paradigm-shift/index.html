@@ -41,9 +41,11 @@ onDomLoad(function() {
 	slidesDiv.className = 'x-slides';
 
 	for (var i = 0; i < 42; i++) {
-		var fileName = ('0' + i).slice(-2) + '.svg';
+		var extension = '.svg';
 
-		if (i === 7) fileName = '07.png';
+		if (i === 7 || i === 18 || i === 33) extension = '.png'; // HACK
+
+		var fileName = ('0' + i).slice(-2) + extension;
 
 		var slideDivEl = document.createElement('div');
 		slideDivEl.className = 'x-slide';
