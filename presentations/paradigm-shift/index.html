@@ -67,9 +67,9 @@ onDomLoad(function() {
 		var key = e.key || e.code;
 		var code = e.keyCode || e.which;
 
-		if (key === 'ArrowRight' || code === 39) {
+		if (key === 'ArrowRight' || key === 'PageDown' || code === 39 || code === 34) {
 			goNextSlide();
-		} else if (key === 'ArrowLeft' || code === 37) {
+		} else if (key === 'ArrowLeft' || key === 'PageUp' || code === 37 || code === 33) {
 			goPrevSlide();
 		}
 	});
