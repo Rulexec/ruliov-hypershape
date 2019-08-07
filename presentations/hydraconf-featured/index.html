@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Избранные темы Hydraconf</title>
+
+	<style>
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background: white;
+}
+
+.x-slides {
+	height: 100vh;
+	overflow: hidden;
+}
+
+.x-slide {
+	width: 100%;
+	height: 100vh;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.x-slide > img {
+	max-width: 100%;
+	max-height: 100%;
+}
+.x-slide > iframe {
+	border: none;
+	width: 100%;
+	height: 100%;
+}
+.x-slide > .iframe-escape-plan {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 9999;
+}
+	</style>
+
+	<script>
+var SLIDES_COUNT = 36;
+
+onDomLoad(function() {
+	var slidesDiv = document.createElement('div');
+	slidesDiv.className = 'x-slides';
+
+	var svgSlides = {};
+	var customBackgrounds = {};
+
+	['00', '05', '35'].forEach(function(id) {
+		svgSlides[id] = true;
+		customBackgrounds[id] = '#F8F8F2';
+	});
+
+	var i, id;
+
+	for (i = 8; i <= 19; i++) { // paxos
+		id = ('0' + i).slice(-2);
+
+		svgSlides[id] = true;
+		customBackgrounds[id] = '#FFFFFF';
+	}
+
+	for (i = 0; i < SLIDES_COUNT; i++) {
+		var slideDivEl = document.createElement('div');
+		slideDivEl.className = 'x-slide';
+
+		slidesDiv.appendChild(slideDivEl);
+
+		if (i === 20) { // paxos demo iframe
+			slideDivEl.style.position = 'relative';
+
+			var iframe = document.createElement('iframe');
+			iframe.src = 'paxos.html';
+			slideDivEl.appendChild(iframe);
+
+			var controlsDiv = document.createElement('div');
+			controlsDiv.className = 'iframe-escape-plan';
+
+			var backwardButton = document.createElement('button');
+			backwardButton.textContent = '←';
+
+			var forwardButton = document.createElement('button');
+			forwardButton.textContent = '→';
+
+			controlsDiv.appendChild(backwardButton);
+			controlsDiv.appendChild(document.createTextNode(' '));
+			controlsDiv.appendChild(forwardButton);
+
+			backwardButton.addEventListener('click', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				goPrevSlide();
+			});
+			forwardButton.addEventListener('click', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				goNextSlide();
+			});
+
+			slideDivEl.appendChild(controlsDiv);
+			continue;
+		}
+
+		id = ('0' + i).slice(-2);
+
+		var extension = svgSlides[id] ? '.svg' : '.png';
+
+		var fileName = id + extension;
+
+		var backgroundColor = customBackgrounds[id];
+
+		if (backgroundColor) {
+			slideDivEl.style.background = backgroundColor;
+		}
+
+		var imgEl = document.createElement('img');
+
+		imgEl.src = fileName;
+
+		slideDivEl.appendChild(imgEl);
+	}
+
+	document.body.appendChild(slidesDiv);
+
+	var currentSlide = 0;
+
+	window.addEventListener('keyup', function(e) {
+		var key = e.key || e.code;
+		var code = e.keyCode || e.which;
+
+		if (key === 'ArrowRight' || key === 'PageDown' || code === 39 || code === 34) {
+			goNextSlide();
+		} else if (key === 'ArrowLeft' || key === 'PageUp' || code === 37 || code === 33) {
+			goPrevSlide();
+		}
+	});
+
+	window.addEventListener('click', goNextSlide);
+	window.addEventListener('resize', function() {
+		goToSlide(currentSlide);
+	});
+
+	function goPrevSlide() {
+		if (currentSlide <= 0) return;
+
+		currentSlide--;
+
+		goToSlide(currentSlide);
+	}
+	function goNextSlide() {
+		if (currentSlide >= SLIDES_COUNT - 1) return;
+
+		currentSlide++;
+
+		goToSlide(currentSlide);
+	}
+
+	function goToSlide(index) {
+		var slideEl = slidesDiv.children[index];
+
+		slidesDiv.scrollTop = slideEl.offsetTop;
+	}
+});
+
+function onDomLoad(fun) {
+	var isCalled = false;
+
+	if (document.readyState === 'complete') {
+		fun();
+	} else {
+		document.addEventListener('readystatechange', checkLoad);
+		document.addEventListener('DOMContentLoaded', checkLoad);
+	}
+
+	function checkLoad() {
+		if (isCalled) return;
+
+		if (document.readyState === 'complete') {
+			isCalled = true;
+			fun();
+		}
+	}
+};
+	</script>
+</head>
+<body>
+</body>
+</html>
